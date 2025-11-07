@@ -1,0 +1,15 @@
+[package]
+name = "bossman"
+version = "0.2.0"
+edition = "2021"
+
+[[bin]]
+name = "bossman"
+path = "src/main.rs"
+
+[dependencies]
+ratatui = "0.28"
+crossterm = "0.28"
+tokio = { version = "1.41", features = ["full"] }
+portable-pty = "0.8"
+anyhow = "1.0"
