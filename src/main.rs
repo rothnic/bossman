@@ -152,34 +152,40 @@ impl App {
     }
 
     fn handle_key(&mut self, key: event::KeyEvent) {
+        // Check for navigation keys first (these take priority)
         match (key.code, key.modifiers) {
             // Application control keys (don't forward to session)
             (KeyCode::Char('q'), KeyModifiers::CONTROL) | (KeyCode::Char('c'), KeyModifiers::CONTROL) => {
                 self.should_quit = true;
+                return;
             }
-            (KeyCode::Tab, KeyModifiers::NONE) | (KeyCode::Right, KeyModifiers::CONTROL) => {
+            // Navigation: Ctrl+Arrow keys or Ctrl+1-9 only
+            (KeyCode::Right, KeyModifiers::CONTROL) => {
                 self.selected_tab = (self.selected_tab + 1) % self.sessions.len();
+                return;
             }
-            (KeyCode::BackTab, _) | (KeyCode::Left, KeyModifiers::CONTROL) => {
+            (KeyCode::Left, KeyModifiers::CONTROL) => {
                 self.selected_tab = if self.selected_tab == 0 {
                     self.sessions.len() - 1
                 } else {
                     self.selected_tab - 1
                 };
+                return;
             }
             (KeyCode::Char(c), KeyModifiers::CONTROL) if ('1'..='9').contains(&c) => {
                 let idx = (c as usize) - ('1' as usize);
                 if idx < self.sessions.len() {
                     self.selected_tab = idx;
                 }
+                return;
             }
-            // Forward all other keys to the selected session
-            _ => {
-                if let Some(session) = self.sessions.get(self.selected_tab) {
-                    if let Some(bytes) = key_event_to_bytes(&key) {
-                        let _ = session.write_input(&bytes);
-                    }
-                }
+            _ => {}
+        }
+        
+        // Forward all other keys (including Tab, Shift+Tab, etc.) to the selected session
+        if let Some(session) = self.sessions.get(self.selected_tab) {
+            if let Some(bytes) = key_event_to_bytes(&key) {
+                let _ = session.write_input(&bytes);
             }
         }
     }
@@ -190,12 +196,23 @@ fn key_event_to_bytes(key: &event::KeyEvent) -> Option<Vec<u8>> {
     match key.code {
         KeyCode::Char(c) => {
             if key.modifiers.contains(KeyModifiers::CONTROL) {
-                // Ctrl+A = 0x01, Ctrl+B = 0x02, etc.
-                if c.is_ascii_alphabetic() {
-                    let byte = (c.to_ascii_lowercase() as u8) - b'a' + 1;
-                    Some(vec![byte])
-                } else {
-                    Some(c.to_string().into_bytes())
+                // Handle control characters
+                match c {
+                    // Ctrl+A through Ctrl+Z
+                    'a'..='z' | 'A'..='Z' => {
+                        let byte = (c.to_ascii_lowercase() as u8) - b'a' + 1;
+                        Some(vec![byte])
+                    }
+                    // Special control characters
+                    '@' => Some(vec![0x00]),     // Ctrl+@: NUL
+                    '[' => Some(vec![0x1b]),     // Ctrl+[: ESC
+                    '\\' => Some(vec![0x1c]),    // Ctrl+\: FS
+                    ']' => Some(vec![0x1d]),     // Ctrl+]: GS
+                    '^' => Some(vec![0x1e]),     // Ctrl+^: RS
+                    '_' => Some(vec![0x1f]),     // Ctrl+_: US
+                    '?' => Some(vec![0x7f]),     // Ctrl+?: DEL
+                    // For other control characters, send as-is
+                    _ => Some(c.to_string().into_bytes())
                 }
             } else if key.modifiers.contains(KeyModifiers::ALT) {
                 // Alt sends ESC followed by the character
@@ -332,11 +349,13 @@ fn ui(f: &mut Frame, app: &App) {
     // Render help bar
     let help_text = vec![Line::from(vec![
         Span::styled("Switch: ", Style::default().add_modifier(Modifier::BOLD)),
-        Span::raw("Tab/Shift+Tab or Ctrl+← →  "),
-        Span::styled("Quit: ", Style::default().add_modifier(Modifier::BOLD)),
-        Span::raw("Ctrl+Q or Ctrl+C  "),
+        Span::raw("Ctrl+← →  "),
         Span::styled("Jump: ", Style::default().add_modifier(Modifier::BOLD)),
-        Span::raw("Ctrl+1-9"),
+        Span::raw("Ctrl+1-9  "),
+        Span::styled("Quit: ", Style::default().add_modifier(Modifier::BOLD)),
+        Span::raw("Ctrl+Q/C  "),
+        Span::styled("Input: ", Style::default().add_modifier(Modifier::BOLD)),
+        Span::raw("Forwarded to active TUI"),
     ])];
 
     let help = Paragraph::new(help_text).style(Style::default().fg(Color::Gray));

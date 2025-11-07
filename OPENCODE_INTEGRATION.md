@@ -177,10 +177,10 @@ Input forwarding is now fully implemented! You can:
 
 The following keys are reserved for Bossman controls and won't be forwarded:
 - `Ctrl+Q` or `Ctrl+C` - Quit Bossman
-- `Tab`, `Shift+Tab`, `Ctrl+Left/Right` - Switch tabs
+- `Ctrl+Left/Right` - Switch tabs
 - `Ctrl+1` through `Ctrl+9` - Jump to specific tabs
 
-All other keys are forwarded to the active TUI session.
+All other keys (including Tab and Shift+Tab) are forwarded to the active TUI session.
 
 ## Best Practices
 

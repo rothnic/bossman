@@ -97,8 +97,6 @@ Uses macOS native APIs:
 
 | Key | Action |
 |-----|--------|
-| `Tab` | Next tab |
-| `Shift+Tab` | Previous tab |
 | `Ctrl+→` | Next tab |
 | `Ctrl+←` | Previous tab |
 | `Ctrl+1` to `Ctrl+9` | Jump to specific tab |

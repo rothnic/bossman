@@ -41,11 +41,11 @@ cargo run --release
 
 ### Keyboard Controls
 
-- **Tab** or **Ctrl+→**: Switch to next tab
-- **Shift+Tab** or **Ctrl+←**: Switch to previous tab
+- **Ctrl+→**: Switch to next tab
+- **Ctrl+←**: Switch to previous tab
 - **Ctrl+1** through **Ctrl+9**: Jump directly to tab 1-9
 - **Ctrl+Q** or **Ctrl+C**: Quit the application
-- **All other keys**: Forwarded to the active TUI session (typing, arrows, Enter, etc.)
+- **All other keys**: Forwarded to the active TUI session (typing, arrows, Tab, Shift+Tab, Enter, etc.)
 
 ### Default Sessions
 
