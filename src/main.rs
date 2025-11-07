@@ -96,41 +96,38 @@ struct App {
 
 impl App {
     async fn new() -> Result<Self> {
-        let mut sessions = Vec::new();
-
         // Example sessions - you can modify these or make them configurable
         // For demo purposes, we'll use simple commands that produce output
         
-        // Session 1: watch date command (simulates a live updating TUI)
-        sessions.push(TuiSession::new(
-            "Watch Date".to_string(),
-            "watch".to_string(),
-            vec!["-n".to_string(), "1".to_string(), "date".to_string()],
-        )?);
-
-        // Session 2: top command (actual TUI)
-        sessions.push(TuiSession::new(
-            "System Monitor".to_string(),
-            "top".to_string(),
-            vec!["-b".to_string(), "-d".to_string(), "1".to_string()],
-        )?);
-
-        // Session 3: tail of a log file (or create one)
-        sessions.push(TuiSession::new(
-            "Log Viewer".to_string(),
-            "bash".to_string(),
-            vec![
-                "-c".to_string(),
-                "while true; do echo \"[$(date)] Log entry $RANDOM\"; sleep 1; done".to_string(),
-            ],
-        )?);
-
-        // Session 4: Shell session
-        sessions.push(TuiSession::new(
-            "Shell".to_string(),
-            "bash".to_string(),
-            vec!["--norc".to_string(), "-i".to_string()],
-        )?);
+        let sessions = vec![
+            // Session 1: watch date command (simulates a live updating TUI)
+            TuiSession::new(
+                "Watch Date".to_string(),
+                "watch".to_string(),
+                vec!["-n".to_string(), "1".to_string(), "date".to_string()],
+            )?,
+            // Session 2: top command (actual TUI)
+            TuiSession::new(
+                "System Monitor".to_string(),
+                "top".to_string(),
+                vec!["-b".to_string(), "-d".to_string(), "1".to_string()],
+            )?,
+            // Session 3: tail of a log file (or create one)
+            TuiSession::new(
+                "Log Viewer".to_string(),
+                "bash".to_string(),
+                vec![
+                    "-c".to_string(),
+                    "while true; do echo \"[$(date)] Log entry $RANDOM\"; sleep 1; done".to_string(),
+                ],
+            )?,
+            // Session 4: Shell session
+            TuiSession::new(
+                "Shell".to_string(),
+                "bash".to_string(),
+                vec!["--norc".to_string(), "-i".to_string()],
+            )?,
+        ];
 
         Ok(Self {
             sessions,
@@ -154,7 +151,7 @@ impl App {
                     self.selected_tab - 1
                 };
             }
-            (KeyCode::Char(c), KeyModifiers::CONTROL) if c >= '1' && c <= '9' => {
+            (KeyCode::Char(c), KeyModifiers::CONTROL) if ('1'..='9').contains(&c) => {
                 let idx = (c as usize) - ('1' as usize);
                 if idx < self.sessions.len() {
                     self.selected_tab = idx;
