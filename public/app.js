@@ -8,6 +8,19 @@ const fitAddons = {};
 // Terminal IDs
 const terminalIds = ['terminal-1', 'terminal-2', 'terminal-3', 'terminal-4'];
 
+// Debounce helper function
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+
 // Initialize terminals
 function initializeTerminals() {
     terminalIds.forEach((terminalId) => {
@@ -85,15 +98,17 @@ function createTerminal(terminalId) {
         term.write('*** Refresh page to restart ***\r\n');
     });
 
-    // Handle resize
-    const resizeObserver = new ResizeObserver(() => {
+    // Handle resize with debouncing
+    const debouncedResize = debounce(() => {
         fitAddon.fit();
         socket.emit('terminal-resize', {
             terminalId,
             cols: term.cols,
             rows: term.rows
         });
-    });
+    }, 150);
+    
+    const resizeObserver = new ResizeObserver(debouncedResize);
     resizeObserver.observe(container);
 }
 
@@ -105,8 +120,8 @@ function killTerminal(terminalId) {
     }
 }
 
-// Handle window resize
-window.addEventListener('resize', () => {
+// Handle window resize with debouncing
+const handleWindowResize = debounce(() => {
     Object.keys(fitAddons).forEach((terminalId) => {
         fitAddons[terminalId].fit();
         const term = terminals[terminalId];
@@ -116,7 +131,9 @@ window.addEventListener('resize', () => {
             rows: term.rows
         });
     });
-});
+}, 150);
+
+window.addEventListener('resize', handleWindowResize);
 
 // Initialize when page loads
 window.addEventListener('load', () => {

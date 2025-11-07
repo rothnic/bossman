@@ -21,12 +21,16 @@ app.use('/xterm-addon-fit', express.static(path.join(__dirname, 'node_modules/xt
 // Store active terminal sessions
 const terminals = {};
 const logs = {};
+const socketTerminals = {}; // Track which terminals belong to which socket
 
 // Determine shell based on OS
 const shell = os.platform() === 'win32' ? 'powershell.exe' : 'bash';
 
 io.on('connection', (socket) => {
   console.log('Client connected:', socket.id);
+  
+  // Initialize terminal tracking for this socket
+  socketTerminals[socket.id] = [];
 
   // Create a new terminal session
   socket.on('create-terminal', (terminalId) => {
@@ -48,10 +52,16 @@ io.on('connection', (socket) => {
 
     terminals[terminalId] = term;
     logs[terminalId] = [];
+    
+    // Track terminal ownership
+    socketTerminals[socket.id].push(terminalId);
 
-    // Send output from PTY to client
+    // Send output from PTY to all clients (for this simple implementation)
+    // In production, you might want to track which socket owns which terminal
     term.onData((data) => {
-      logs[terminalId].push(data);
+      if (logs[terminalId]) {
+        logs[terminalId].push(data);
+      }
       io.emit(`terminal-output-${terminalId}`, data);
     });
 
@@ -91,6 +101,19 @@ io.on('connection', (socket) => {
 
   socket.on('disconnect', () => {
     console.log('Client disconnected:', socket.id);
+    
+    // Clean up all terminals associated with this socket
+    if (socketTerminals[socket.id]) {
+      socketTerminals[socket.id].forEach((terminalId) => {
+        if (terminals[terminalId]) {
+          console.log(`Cleaning up terminal: ${terminalId}`);
+          terminals[terminalId].kill();
+          delete terminals[terminalId];
+          delete logs[terminalId];
+        }
+      });
+      delete socketTerminals[socket.id];
+    }
   });
 });
 
