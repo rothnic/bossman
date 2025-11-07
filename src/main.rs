@@ -13,6 +13,7 @@ use ratatui::{
     widgets::{Block, Borders, Paragraph, Tabs},
     Frame, Terminal,
 };
+use std::io::Read;
 use std::sync::{Arc, Mutex};
 use std::{io, time::Duration};
 
@@ -39,9 +40,9 @@ impl TuiSession {
         let output_buffer = Arc::new(Mutex::new(Vec::new()));
         let output_buffer_clone = Arc::clone(&output_buffer);
 
-        // Spawn the reader thread for PTY output
+        // Spawn the reader thread for PTY output using blocking thread pool
         let mut reader = pair.master.try_clone_reader()?;
-        tokio::spawn(async move {
+        tokio::task::spawn_blocking(move || {
             let mut buf = [0u8; 8192];
             loop {
                 match reader.read(&mut buf) {
@@ -58,7 +59,8 @@ impl TuiSession {
                     Ok(_) => break,
                     Err(_) => break,
                 }
-                tokio::time::sleep(Duration::from_millis(10)).await;
+                // Small sleep to avoid busy-waiting
+                std::thread::sleep(Duration::from_millis(10));
             }
         });
 

@@ -21,9 +21,9 @@ The native macOS version provides the same functionality as the terminal-based v
 ## Building
 
 ### Prerequisites
-- macOS 13.0 or later
-- Xcode 15.0 or later
-- Swift 5.9 or later
+- macOS 12.0 or later
+- Xcode 14.0 or later
+- Swift 5.7 or later
 
 ### Build and Run
 
@@ -92,7 +92,7 @@ The slave end is connected to the spawned process's stdin/stdout/stderr, while t
 - Currently output-only (no input to child processes)
 - Basic ANSI escape code handling
 - No color rendering yet
-- Requires macOS 13.0+
+- Requires macOS 12.0+
 
 ## License
 
