@@ -225,15 +225,12 @@ fn render_session(f: &mut ratatui::Frame, app: &App, idx: usize, area: Rect) {
     let session = &app.sessions[idx];
     let is_selected = idx == app.selected_session;
 
-    let (_border_color, border_style) = if is_selected {
-        (
-            Color::Cyan,
-            Style::default()
-                .fg(Color::Cyan)
-                .add_modifier(Modifier::BOLD),
-        )
+    let border_style = if is_selected {
+        Style::default()
+            .fg(Color::Cyan)
+            .add_modifier(Modifier::BOLD)
     } else {
-        (Color::Gray, Style::default().fg(Color::Gray))
+        Style::default().fg(Color::Gray)
     };
 
     let status_color = match session.status {
