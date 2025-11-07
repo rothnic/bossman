@@ -1,0 +1,44 @@
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                      Bossman Terminal Multiplexer                            ║
+║        Screenshot 6: OpenCode-Style Interaction - Slash Command Menu         ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ ╔════════════════════════════════════════════════════════════════════════╗   │
+│ ║  [OpenCode Main*] [OpenCode Tests] [System] [Shell]                   ║   │
+│ ╚════════════════════════════════════════════════════════════════════════╝   │
+│ ┌────────────────────────────────────────────────────────────────────────┐   │
+│ │ OpenCode Main - opencode                                               │   │
+│ ├────────────────────────────────────────────────────────────────────────┤   │
+│ │                                                                        │   │
+│ │  OpenCode v1.0 - Workspace: /home/runner/work/project                 │   │
+│ │  ────────────────────────────────────────────────────────────────────  │   │
+│ │                                                                        │   │
+│ │  > /█                                                                  │   │
+│ │                                                                        │   │
+│ │  ┌──────────────────────────────────────────┐                         │   │
+│ │  │  Slash Commands                          │                         │   │
+│ │  ├──────────────────────────────────────────┤                         │   │
+│ │  │ ▶ /fix      - Fix code issues            │                         │   │
+│ │  │   /test     - Generate tests             │                         │   │
+│ │  │   /doc      - Add documentation          │                         │   │
+│ │  │   /refactor - Improve code structure     │                         │   │
+│ │  │   /explain  - Explain code               │                         │   │
+│ │  │   /review   - Review changes             │                         │   │
+│ │  └──────────────────────────────────────────┘                         │   │
+│ │                                                                        │   │
+│ │  Previous messages:                                                    │   │
+│ │  • User: Hello, can you help me?                                      │   │
+│ │  • Assistant: Of course! What would you like help with?               │   │
+│ │                                                                        │   │
+│ └────────────────────────────────────────────────────────────────────────┘   │
+│ Switch: Ctrl+← →  Jump: Ctrl+1-9  Quit: Ctrl+Q/C  Input: Forwarded to TUI   │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+ACTION TAKEN: User configured OpenCode session, typed "/" to trigger slash menu
+STATE: OpenCode TUI active, slash menu open showing available commands
+INPUT: User typed "/" character, OpenCode displayed command menu
+HIGHLIGHTED: First menu item "▶ /fix" is selected
+NAVIGATION: User can now use ↑↓ arrow keys to select different commands
+FEATURE: All keys (/, arrows, Enter, typing) forwarded to OpenCode TUI
+NOTE: Demonstrates the core use case - interacting with OpenCode
