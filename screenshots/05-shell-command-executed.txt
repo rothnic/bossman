@@ -1,0 +1,40 @@
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                      Bossman Terminal Multiplexer                            ║
+║           Screenshot 5: Shell - Command Executed with Output                 ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ ╔════════════════════════════════════════════════════════════════════════╗   │
+│ ║  [Watch Date] [System Monitor] [Log Viewer] [Shell*]                  ║   │
+│ ╚════════════════════════════════════════════════════════════════════════╝   │
+│ ┌────────────────────────────────────────────────────────────────────────┐   │
+│ │ Shell - bash                                                           │   │
+│ ├────────────────────────────────────────────────────────────────────────┤   │
+│ │                                                                        │   │
+│ │ bash-5.1$ pwd                                                          │   │
+│ │ /home/runner/work/bossman/bossman                                      │   │
+│ │ bash-5.1$ ls -la                                                       │   │
+│ │ total 76                                                               │   │
+│ │ drwxr-xr-x 5 runner runner 4096 Nov  7 17:02 .                        │   │
+│ │ drwxr-xr-x 4 runner runner 4096 Nov  7 17:02 ..                       │   │
+│ │ drwxr-xr-x 7 runner runner 4096 Nov  7 17:02 .git                     │   │
+│ │ -rw-r--r-- 1 runner runner   29 Nov  7 17:02 .gitignore               │   │
+│ │ -rw-r--r-- 1 runner runner 8442 Nov  7 17:02 ARCHITECTURE.txt         │   │
+│ │ -rw-r--r-- 1 runner runner  247 Nov  7 17:02 Cargo.toml               │   │
+│ │ drwxr-xr-x 3 runner runner 4096 Nov  7 17:02 macos-native             │   │
+│ │ -rwxr-xr-x 1 runner runner 1176 Nov  7 17:02 demo.sh                  │   │
+│ │ drwxr-xr-x 2 runner runner 4096 Nov  7 17:02 src                      │   │
+│ │ bash-5.1$ echo "Hello from Bossman!"                                   │   │
+│ │ Hello from Bossman!                                                    │   │
+│ │ bash-5.1$ █                                                            │   │
+│ │                                                                        │   │
+│ └────────────────────────────────────────────────────────────────────────┘   │
+│ Switch: Ctrl+← →  Jump: Ctrl+1-9  Quit: Ctrl+Q/C  Input: Forwarded to TUI   │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+ACTION TAKEN: User pressed Enter to execute the command
+STATE: Shell tab still selected - command output displayed
+OUTPUT: "Hello from Bossman!" printed to shell
+NOTE: Cursor █ ready for next command
+FEATURE: Full bidirectional I/O - commands execute and output appears
+DEMONSTRATION: Enter key properly forwarded (0x0D byte sent to PTY)

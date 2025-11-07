@@ -1,0 +1,39 @@
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                      Bossman Terminal Multiplexer                            ║
+║                Screenshot 4: Interactive Shell - Typing Command              ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ ╔════════════════════════════════════════════════════════════════════════╗   │
+│ ║  [Watch Date] [System Monitor] [Log Viewer] [Shell*]                  ║   │
+│ ╚════════════════════════════════════════════════════════════════════════╝   │
+│ ┌────────────────────────────────────────────────────────────────────────┐   │
+│ │ Shell - bash                                                           │   │
+│ ├────────────────────────────────────────────────────────────────────────┤   │
+│ │                                                                        │   │
+│ │ bash-5.1$ pwd                                                          │   │
+│ │ /home/runner/work/bossman/bossman                                      │   │
+│ │ bash-5.1$ ls -la                                                       │   │
+│ │ total 76                                                               │   │
+│ │ drwxr-xr-x 5 runner runner 4096 Nov  7 17:02 .                        │   │
+│ │ drwxr-xr-x 4 runner runner 4096 Nov  7 17:02 ..                       │   │
+│ │ drwxr-xr-x 7 runner runner 4096 Nov  7 17:02 .git                     │   │
+│ │ -rw-r--r-- 1 runner runner   29 Nov  7 17:02 .gitignore               │   │
+│ │ -rw-r--r-- 1 runner runner 8442 Nov  7 17:02 ARCHITECTURE.txt         │   │
+│ │ -rw-r--r-- 1 runner runner  247 Nov  7 17:02 Cargo.toml               │   │
+│ │ drwxr-xr-x 3 runner runner 4096 Nov  7 17:02 macos-native             │   │
+│ │ -rwxr-xr-x 1 runner runner 1176 Nov  7 17:02 demo.sh                  │   │
+│ │ drwxr-xr-x 2 runner runner 4096 Nov  7 17:02 src                      │   │
+│ │ bash-5.1$ echo "Hello from Bossman!"█                                  │   │
+│ │                                                                        │   │
+│ │                                                                        │   │
+│ └────────────────────────────────────────────────────────────────────────┘   │
+│ Switch: Ctrl+← →  Jump: Ctrl+1-9  Quit: Ctrl+Q/C  Input: Forwarded to TUI   │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+ACTION TAKEN: User pressed Ctrl+4 to jump to Shell tab, then typed command
+STATE: Fourth tab (Shell) is selected and active - user is typing
+HIGHLIGHTED: "Shell" tab has cyan highlight with bold text
+INPUT: User typed: echo "Hello from Bossman!"
+NOTE: Cursor █ shows where next character will appear
+FEATURE: All keyboard input forwarded to bash session in real-time
