@@ -76,7 +76,7 @@ impl App {
                 }
             }
             KeyCode::Right | KeyCode::Char('l') => {
-                if self.selected_session % 2 == 0 && self.selected_session < 3 {
+                if self.selected_session.is_multiple_of(2) && self.selected_session < 3 {
                     self.selected_session += 1;
                 }
             }
@@ -103,7 +103,9 @@ impl App {
                         SessionStatus::Stopped
                     }
                     SessionStatus::Stopped => {
-                        session.output.push(format!("{} restarting...", session.name));
+                        session
+                            .output
+                            .push(format!("{} restarting...", session.name));
                         SessionStatus::Running
                     }
                 };
@@ -181,7 +183,7 @@ fn ui(f: &mut ratatui::Frame, app: &App) {
         .constraints([Constraint::Percentage(50), Constraint::Percentage(50)].as_ref())
         .split(vertical_chunks[1]);
 
-    let chunks = vec![
+    let chunks = [
         top_chunks[0],
         top_chunks[1],
         bottom_chunks[0],
@@ -194,19 +196,20 @@ fn ui(f: &mut ratatui::Frame, app: &App) {
     }
 
     // Render help text at the bottom
-    let help_text = vec![
-        Line::from(vec![
-            Span::styled("Navigation: ", Style::default().add_modifier(Modifier::BOLD)),
-            Span::raw("←↑↓→ or hjkl  "),
-            Span::styled("Toggle: ", Style::default().add_modifier(Modifier::BOLD)),
-            Span::raw("s  "),
-            Span::styled("Quit: ", Style::default().add_modifier(Modifier::BOLD)),
-            Span::raw("q"),
-        ]),
-    ];
+    let help_text = vec![Line::from(vec![
+        Span::styled(
+            "Navigation: ",
+            Style::default().add_modifier(Modifier::BOLD),
+        ),
+        Span::raw("←↑↓→ or hjkl  "),
+        Span::styled("Toggle: ", Style::default().add_modifier(Modifier::BOLD)),
+        Span::raw("s  "),
+        Span::styled("Quit: ", Style::default().add_modifier(Modifier::BOLD)),
+        Span::raw("q"),
+    ])];
 
     let help_paragraph = Paragraph::new(help_text).style(Style::default().fg(Color::Gray));
-    
+
     // Create a small area at the bottom for help text
     let help_area = Rect {
         x: 0,
@@ -214,7 +217,7 @@ fn ui(f: &mut ratatui::Frame, app: &App) {
         width: size.width,
         height: 1,
     };
-    
+
     f.render_widget(help_paragraph, help_area);
 }
 
@@ -223,7 +226,12 @@ fn render_session(f: &mut ratatui::Frame, app: &App, idx: usize, area: Rect) {
     let is_selected = idx == app.selected_session;
 
     let (_border_color, border_style) = if is_selected {
-        (Color::Cyan, Style::default().fg(Color::Cyan).add_modifier(Modifier::BOLD))
+        (
+            Color::Cyan,
+            Style::default()
+                .fg(Color::Cyan)
+                .add_modifier(Modifier::BOLD),
+        )
     } else {
         (Color::Gray, Style::default().fg(Color::Gray))
     };
@@ -234,17 +242,17 @@ fn render_session(f: &mut ratatui::Frame, app: &App, idx: usize, area: Rect) {
         SessionStatus::Stopped => Color::Red,
     };
 
-    let title = format!(
-        " {} [{:?}] ",
-        session.name,
-        session.status
-    );
+    let title = format!(" {} [{:?}] ", session.name, session.status);
 
     let block = Block::default()
         .borders(Borders::ALL)
         .border_style(border_style)
         .title(title)
-        .title_style(Style::default().fg(status_color).add_modifier(Modifier::BOLD));
+        .title_style(
+            Style::default()
+                .fg(status_color)
+                .add_modifier(Modifier::BOLD),
+        );
 
     // Display session output
     let output_lines: Vec<Line> = session
