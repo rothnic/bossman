@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bossman - Terminal Manager</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="/xterm/css/xterm.css" />
+</head>
+<body>
+    <div class="header">
+        <h1>🎯 Bossman - Agent Terminal Manager</h1>
+        <div class="info">
+            <span>Press <kbd>Ctrl+C</kbd> to interrupt | Multiple terminals for running agents like OpenCode</span>
+        </div>
+    </div>
+    
+    <div class="terminal-grid">
+        <div class="terminal-container">
+            <div class="terminal-header">
+                <span class="terminal-title">Terminal 1</span>
+                <button class="kill-btn" onclick="killTerminal('terminal-1')">✕</button>
+            </div>
+            <div id="terminal-1" class="terminal"></div>
+        </div>
+        
+        <div class="terminal-container">
+            <div class="terminal-header">
+                <span class="terminal-title">Terminal 2</span>
+                <button class="kill-btn" onclick="killTerminal('terminal-2')">✕</button>
+            </div>
+            <div id="terminal-2" class="terminal"></div>
+        </div>
+        
+        <div class="terminal-container">
+            <div class="terminal-header">
+                <span class="terminal-title">Terminal 3</span>
+                <button class="kill-btn" onclick="killTerminal('terminal-3')">✕</button>
+            </div>
+            <div id="terminal-3" class="terminal"></div>
+        </div>
+        
+        <div class="terminal-container">
+            <div class="terminal-header">
+                <span class="terminal-title">Terminal 4</span>
+                <button class="kill-btn" onclick="killTerminal('terminal-4')">✕</button>
+            </div>
+            <div id="terminal-4" class="terminal"></div>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/xterm/lib/xterm.js"></script>
+    <script src="/xterm-addon-fit/lib/xterm-addon-fit.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
