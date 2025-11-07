@@ -165,26 +165,22 @@ The current implementation displays raw output. For full ANSI color support, you
 
 This is a planned enhancement for a future version.
 
-### Input Not Working
+## Using Input with OpenCode
 
-The current implementation is read-only. To enable input to OpenCode:
+Input forwarding is now fully implemented! You can:
 
-1. Capture keyboard events in the render loop
-2. Write them to the PTY master file descriptor
-3. Handle special keys (arrows, function keys, etc.)
+1. **Type directly** into the active session - all keystrokes are forwarded
+2. **Use arrow keys** to navigate within OpenCode
+3. **Press Enter** to confirm commands
+4. **Use slash commands** (/) to access OpenCode features
+5. **Tab completion** works within OpenCode itself
 
-Example:
+The following keys are reserved for Bossman controls and won't be forwarded:
+- `Ctrl+Q` or `Ctrl+C` - Quit Bossman
+- `Tab`, `Shift+Tab`, `Ctrl+Left/Right` - Switch tabs
+- `Ctrl+1` through `Ctrl+9` - Jump to specific tabs
 
-```rust
-// In the event handling loop
-if let Event::Key(key) = event::read()? {
-    if app.selected_tab < app.sessions.len() {
-        let session = &app.sessions[app.selected_tab];
-        // Write key to PTY (requires storing master FD in session)
-        write_key_to_pty(session.master_fd, key)?;
-    }
-}
-```
+All other keys are forwarded to the active TUI session.
 
 ## Best Practices
 

@@ -14,6 +14,7 @@ This solves the problem of wanting to run multiple agent TUIs (like OpenCode, vi
 - **Tab-Based Switching**: Easy navigation between sessions using Tab or Ctrl+Arrow keys
 - **Real PTY Support**: Each session runs in its own pseudo-terminal for full compatibility
 - **Live Output**: See real-time output from all running sessions
+- **Input Forwarding**: Type directly into the active session - all keystrokes are forwarded to the TUI
 - **Simple Configuration**: Easily customize which applications to run
 
 ## Installation
@@ -44,6 +45,7 @@ cargo run --release
 - **Shift+Tab** or **Ctrl+←**: Switch to previous tab
 - **Ctrl+1** through **Ctrl+9**: Jump directly to tab 1-9
 - **Ctrl+Q** or **Ctrl+C**: Quit the application
+- **All other keys**: Forwarded to the active TUI session (typing, arrows, Enter, etc.)
 
 ### Default Sessions
 

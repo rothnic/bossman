@@ -88,6 +88,7 @@ Uses macOS native APIs:
 - Quick jump shortcuts (Ctrl+1-9)
 - Arrow key navigation (Ctrl+Left/Right)
 - Real-time output capture
+- **Input forwarding to active session**
 - Automatic buffer management
 - Cross-platform support (Linux/macOS/Windows via WSL)
 - Clean shutdown and resource cleanup
@@ -102,6 +103,7 @@ Uses macOS native APIs:
 | `Ctrl+←` | Previous tab |
 | `Ctrl+1` to `Ctrl+9` | Jump to specific tab |
 | `Ctrl+Q` or `Ctrl+C` | Quit |
+| **All other keys** | **Forwarded to active TUI** |
 
 ## OpenCode Integration
 
@@ -204,7 +206,7 @@ Output is read in a blocking thread pool task to avoid blocking the async runtim
 
 Potential improvements:
 
-1. **Input Forwarding**: Allow sending input to selected session
+1. ~~**Input Forwarding**: Allow sending input to selected session~~ ✅ **Implemented**
 2. **ANSI Rendering**: Parse and render ANSI color/style codes
 3. **Configuration File**: Load sessions from TOML/YAML
 4. **Session Persistence**: Save/restore session states
@@ -223,7 +225,7 @@ Potential improvements:
 | Tab interface | ✅ | ✅ | ✅ | ✅ |
 | Split panes | ❌ | ✅ | ✅ | ✅ |
 | Native macOS | ⚠️ (planned) | ❌ | ❌ | ❌ |
-| Input forwarding | ❌ (planned) | ✅ | ✅ | ✅ |
+| Input forwarding | ✅ | ✅ | ✅ | ✅ |
 
 ## Conclusion
 
@@ -235,8 +237,9 @@ This implementation successfully solves the original problem by:
 4. ✅ Supporting any TUI application (OpenCode, vim, htop, etc.)
 5. ✅ Working cross-platform
 6. ✅ Offering both terminal and native app options
+7. ✅ **Full input forwarding to active sessions**
 
-The solution is production-ready for read-only use cases and provides a solid foundation for future enhancements.
+The solution is production-ready for interactive use cases with full keyboard input support.
 
 ## Files in This PR
 

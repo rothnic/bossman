@@ -13,7 +13,7 @@ use ratatui::{
     widgets::{Block, Borders, Paragraph, Tabs},
     Frame, Terminal,
 };
-use std::io::Read;
+use std::io::{Read, Write};
 use std::sync::{Arc, Mutex};
 use std::{io, time::Duration};
 
@@ -22,6 +22,7 @@ struct TuiSession {
     name: String,
     command: String,
     output_buffer: Arc<Mutex<Vec<u8>>>,
+    pty_writer: Arc<Mutex<Box<dyn Write + Send>>>,
     _pty_pair: Option<Box<dyn portable_pty::Child + Send>>,
 }
 
@@ -39,6 +40,9 @@ impl TuiSession {
 
         let output_buffer = Arc::new(Mutex::new(Vec::new()));
         let output_buffer_clone = Arc::clone(&output_buffer);
+
+        // Take the writer for input forwarding
+        let pty_writer = Arc::new(Mutex::new(pair.master.take_writer()?));
 
         // Spawn the reader thread for PTY output using blocking thread pool
         let mut reader = pair.master.try_clone_reader()?;
@@ -76,6 +80,7 @@ impl TuiSession {
             name,
             command,
             output_buffer,
+            pty_writer,
             _pty_pair: Some(child),
         })
     }
@@ -86,6 +91,14 @@ impl TuiSession {
         } else {
             String::new()
         }
+    }
+
+    fn write_input(&self, data: &[u8]) -> Result<()> {
+        if let Ok(mut writer) = self.pty_writer.lock() {
+            writer.write_all(data)?;
+            writer.flush()?;
+        }
+        Ok(())
     }
 }
 
@@ -140,6 +153,7 @@ impl App {
 
     fn handle_key(&mut self, key: event::KeyEvent) {
         match (key.code, key.modifiers) {
+            // Application control keys (don't forward to session)
             (KeyCode::Char('q'), KeyModifiers::CONTROL) | (KeyCode::Char('c'), KeyModifiers::CONTROL) => {
                 self.should_quit = true;
             }
@@ -159,8 +173,73 @@ impl App {
                     self.selected_tab = idx;
                 }
             }
-            _ => {}
+            // Forward all other keys to the selected session
+            _ => {
+                if let Some(session) = self.sessions.get(self.selected_tab) {
+                    if let Some(bytes) = key_event_to_bytes(&key) {
+                        let _ = session.write_input(&bytes);
+                    }
+                }
+            }
         }
+    }
+}
+
+/// Convert a KeyEvent to bytes that should be sent to the PTY
+fn key_event_to_bytes(key: &event::KeyEvent) -> Option<Vec<u8>> {
+    match key.code {
+        KeyCode::Char(c) => {
+            if key.modifiers.contains(KeyModifiers::CONTROL) {
+                // Ctrl+A = 0x01, Ctrl+B = 0x02, etc.
+                if c.is_ascii_alphabetic() {
+                    let byte = (c.to_ascii_lowercase() as u8) - b'a' + 1;
+                    Some(vec![byte])
+                } else {
+                    Some(c.to_string().into_bytes())
+                }
+            } else if key.modifiers.contains(KeyModifiers::ALT) {
+                // Alt sends ESC followed by the character
+                let mut bytes = vec![0x1b]; // ESC
+                bytes.extend(c.to_string().as_bytes());
+                Some(bytes)
+            } else {
+                Some(c.to_string().into_bytes())
+            }
+        }
+        KeyCode::Enter => Some(vec![b'\r']),
+        KeyCode::Backspace => Some(vec![0x7f]), // DEL
+        KeyCode::Delete => Some(vec![0x1b, b'[', b'3', b'~']),
+        KeyCode::Left => Some(vec![0x1b, b'[', b'D']),
+        KeyCode::Right => Some(vec![0x1b, b'[', b'C']),
+        KeyCode::Up => Some(vec![0x1b, b'[', b'A']),
+        KeyCode::Down => Some(vec![0x1b, b'[', b'B']),
+        KeyCode::Home => Some(vec![0x1b, b'[', b'H']),
+        KeyCode::End => Some(vec![0x1b, b'[', b'F']),
+        KeyCode::PageUp => Some(vec![0x1b, b'[', b'5', b'~']),
+        KeyCode::PageDown => Some(vec![0x1b, b'[', b'6', b'~']),
+        KeyCode::Tab => Some(vec![b'\t']),
+        KeyCode::BackTab => Some(vec![0x1b, b'[', b'Z']),
+        KeyCode::Esc => Some(vec![0x1b]),
+        KeyCode::Insert => Some(vec![0x1b, b'[', b'2', b'~']),
+        KeyCode::F(n) => {
+            // F1-F12 function keys
+            match n {
+                1 => Some(vec![0x1b, b'O', b'P']),
+                2 => Some(vec![0x1b, b'O', b'Q']),
+                3 => Some(vec![0x1b, b'O', b'R']),
+                4 => Some(vec![0x1b, b'O', b'S']),
+                5 => Some(vec![0x1b, b'[', b'1', b'5', b'~']),
+                6 => Some(vec![0x1b, b'[', b'1', b'7', b'~']),
+                7 => Some(vec![0x1b, b'[', b'1', b'8', b'~']),
+                8 => Some(vec![0x1b, b'[', b'1', b'9', b'~']),
+                9 => Some(vec![0x1b, b'[', b'2', b'0', b'~']),
+                10 => Some(vec![0x1b, b'[', b'2', b'1', b'~']),
+                11 => Some(vec![0x1b, b'[', b'2', b'3', b'~']),
+                12 => Some(vec![0x1b, b'[', b'2', b'4', b'~']),
+                _ => None,
+            }
+        }
+        _ => None,
     }
 }
 
